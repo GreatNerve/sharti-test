@@ -33,6 +33,7 @@ const fomrmShape = [
       { value: "number", label: "Number" },
       { value: "textarea", label: "Textarea" },
       { value: "date", label: "Date" },
+      { value: "checkbox", label: "Checkbox" },
     ],
   },
 ];
