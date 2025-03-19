@@ -32,6 +32,7 @@ const fomrmShape = [
       { value: "email", label: "Email" },
       { value: "number", label: "Number" },
       { value: "textarea", label: "Textarea" },
+      { value: "date", label: "Date" },
     ],
   },
 ];
@@ -42,7 +43,9 @@ export default function Home() {
   });
 
   const localfomr = localStorage.getItem("fomrState");
-  const [fomrState, setFormState] = useState(localfomr ? JSON.parse(localfomr) : []);
+  const [fomrState, setFormState] = useState(
+    localfomr ? JSON.parse(localfomr) : []
+  );
 
   useEffect(() => {
     localStorage.setItem("fomrState", JSON.stringify(fomrState));
@@ -77,13 +80,31 @@ export default function Home() {
             onSubmit={form.handleSubmit(onSubmit)}
             submitText={"Add Field"}
           />
+
+          <div className="mt-4">
+            {fomrState?.length > 0 && (
+                <Button
+                variant={"destructive"}
+                className={cn("w-full")}
+                onClick={() => {
+                  setFormState([]);
+                }}
+              >
+                Clear Form
+              </Button>
+            )}
+            </div>
         </div>
       </div>
       <div className=" p-4 rounded-lg flex flex-col justify-center items-center">
         <h1 className="text-2xl font-bold mb-4">View Form</h1>
         <div className="w-full max-w-[400px]">
           {fomrState?.length > 0 ? (
-            <FormGenerate form={form} formFields={fomrState} />
+            <FormGenerate
+              form={form}
+              formFields={fomrState}
+              submitText={"Submit"}
+            />
           ) : (
             <div className="text-center text-gray-500">No Form Created Yet</div>
           )}
