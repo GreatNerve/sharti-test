@@ -1,5 +1,5 @@
 import FormGenerate from "@/components/ui/includes/FormGenrate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 const fomrSchema = z.object({
   feildName: z.string().nonempty(),
+  placeholder: z.string().nonempty(),
   type: z.string().nonempty(),
 });
 
@@ -25,6 +26,7 @@ const fomrmShape = [
   {
     name: "type",
     type: "select",
+    placeholder: "Select Type",
     options: [
       { value: "text", label: "Text" },
       { value: "email", label: "Email" },
@@ -38,15 +40,30 @@ export default function Home() {
   const form = useForm({
     resolver: zodResolver(fomrSchema),
   });
-  const [fomrState, setFormState] = useState([]);
+
+  const localfomr = localStorage.getItem("fomrState");
+  const [fomrState, setFormState] = useState(localfomr ? JSON.parse(localfomr) : []);
+
+  useEffect(() => {
+    localStorage.setItem("fomrState", JSON.stringify(fomrState));
+  }, [fomrState]);
 
   const onSubmit = (data) => {
     setFormState((prev) => {
-      if (data.type === "name") {
-        return [...prev, { name: data.feildName, type: data.type , placeholder: data.placeholder}];
-      }
+      return [
+        ...prev,
+        {
+          name: data.feildName,
+          type: data.type,
+          placeholder: data.placeholder,
+        },
+      ];
     });
-    form.reset();
+    form.reset({
+      feildName: "",
+      placeholder: "",
+      type: "",
+    });
   };
 
   return (
@@ -58,6 +75,7 @@ export default function Home() {
             form={form}
             formFields={fomrmShape}
             onSubmit={form.handleSubmit(onSubmit)}
+            submitText={"Add Field"}
           />
         </div>
       </div>
